@@ -1,3 +1,8 @@
+![framezip logo](logo/logo.png)
+
+![Build](https://img.shields.io/badge/build-passing-brightgreen.svg)
+[![PyPI version](https://img.shields.io/pypi/v/framezip.svg)](https://pypi.org/project/framezip/)
+
 # 📦 framezip
 
 **framezip** is a lightweight and pure-Python toolkit to compress image sequences into a video and decompress them later, with quality evaluation using PSNR and SSIM metrics. All this without external dependencies like FFmpeg.
@@ -87,16 +92,9 @@ compare_psnr_ssim("frames/", "extracted/", csv_output="metrics.csv")
 
 ## 🤝 Contribute
 
-1. Fork the repo
-2. Create a branch: `git checkout -b feature/your-feature`
-3. Commit your changes: `git commit -am 'Add new feature'`
-4. Push: `git push origin feature/your-feature`
-5. Open a pull request ✨
+We love contributions! Check out our [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
 
-To run tests:
-```bash
-pytest tests/
-```
+
 
 ---
 
