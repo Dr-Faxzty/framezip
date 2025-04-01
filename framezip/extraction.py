@@ -2,7 +2,7 @@ import os
 import shutil
 import imageio.v3 as iio
 
-def extract_frames(video_path, output_folder):
+def video_to_images(video_path, output_folder):
     """
     Extract frames from a video and save them as images.
     

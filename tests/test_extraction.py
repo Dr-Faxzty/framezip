@@ -1,4 +1,4 @@
-from framezip.extraction import extract_frames
+from framezip.extraction import video_to_images
 from framezip.video import images_to_video
 
 def test_extract_then_compare(tmp_path):
@@ -12,7 +12,7 @@ def test_extract_then_compare(tmp_path):
     images_to_video(str(img_folder), str(video_path))
 
     output_folder = tmp_path / "frames"
-    extract_frames(str(video_path), str(output_folder))
+    video_to_images(str(video_path), str(output_folder))
 
     extracted = list(output_folder.glob("*.jpg"))
     assert len(extracted) == 5, "Frame extraction count mismatch"
