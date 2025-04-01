@@ -47,6 +47,7 @@ Thumbs.db
 *.csv
 metriche_psnr_ssim.csv
 psnr_ssim_metrics.csv
+psnr_ssim_results.csv
 mapping.json
 
 # framezip output
