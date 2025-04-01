@@ -37,6 +37,11 @@ Whether you're a curious dev, researcher, or compression nerd, **framezip** is h
 ---
 
 ## 📦 Installation
+To get started, install the required dependencies:
+
+```bash
+pip install -r requirements.txt
+```
 
 ### ✅ Requirements
 - Python 3.7+
