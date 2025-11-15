@@ -2,6 +2,7 @@ import os
 import imageio.v3 as iio
 from PIL import Image
 import numpy as np
+from rich.progress import Progress
 from .preprocessing import preprocess_images
 
 def images_to_video(input_folder, output_file, framerate="1"):
@@ -26,12 +27,14 @@ def images_to_video(input_folder, output_file, framerate="1"):
     height = max(s[1] for s in sizes)
 
     frames = []
-    for path in frame_paths:
-        empty = Image.new("RGB", (width, height), (0, 0, 0))
-        with Image.open(path) as img:
-            img = img.convert("RGB")
-            empty.paste(img, (0, 0))
-            frames.append(np.array(empty))
+    with Progress() as p:
+        task = p.add_task("[yellow]Converting images...", total=len(frame_paths))
+        for path in frame_paths:
+            empty = Image.new("RGB", (width, height), (0, 0, 0))
+            with Image.open(path) as img:
+                empty.paste(img, (0, 0))
+                frames.append(np.array(empty))
+            p.update(task, advance=1)
 
     print("\n[▶] Video creation in progress...")
     try:

@@ -4,6 +4,7 @@ from PIL import Image
 import imageio.v3 as iio
 import matplotlib.pyplot as plt
 from skimage.metrics import structural_similarity as ssim_lib
+from rich.progress import Progress
 import csv
 
 def psnr(img1, img2):
@@ -74,18 +75,20 @@ def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_
 
     psnr_vals = []
     ssim_vals = []
+    with Progress() as progress:
+        task = progress.add_task("[cyan]Calculating PSNR and SSIM...", total=len(originals))
+        for orig, rec in zip(originals, recon):
+            img1 = Image.open(os.path.join(original_folder, orig)).convert("RGB")
+            img2 = Image.open(os.path.join(reconstructed_folder, rec)).convert("RGB")
+            
+            img2 = img2.crop((0, 0, img1.width, img1.height))
+            iio.imwrite(os.path.join(reconstructed_folder, rec), img2)
 
-    for orig, rec in zip(originals, recon):
-        img1 = Image.open(os.path.join(original_folder, orig)).convert("RGB")
-        img2 = Image.open(os.path.join(reconstructed_folder, rec)).convert("RGB")
-        
-        img2 = img2.crop((0, 0, img1.width, img1.height))
-        iio.imwrite(os.path.join(reconstructed_folder, rec), img2)
-
-        arr1, arr2 = np.array(img1), np.array(img2)
-        
-        psnr_vals.append(psnr(arr1, arr2))
-        ssim_vals.append(ssim_lib(arr1, arr2, channel_axis=2))
+            arr1, arr2 = np.array(img1), np.array(img2)
+            
+            psnr_vals.append(psnr(arr1, arr2))
+            ssim_vals.append(ssim_lib(arr1, arr2, channel_axis=2))
+            progress.update(task, advance=1)
         
     avg_psnr = sum(psnr_vals) / len(psnr_vals) if psnr_vals else 0
     avg_ssim = sum(ssim_vals) / len(ssim_vals) if ssim_vals else 0

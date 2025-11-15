@@ -5,3 +5,4 @@ scikit-image>=0.19
 imageio>=2.31
 imageio-ffmpeg>=0.4.7
 pytest>=7.0
+rich>=12.0
