@@ -52,7 +52,7 @@ def images_to_video(input_folder, output_file, framerate="1", heuristic_sort=Tru
 
     print("\n[▶] Video creation in progress...")
     try:
-        iio.imwrite(output_file, frames, fps=int(framerate))
+        iio.imwrite(output_file, frames, fps=int(framerate), codec="libx265")
     except Exception as e:
         print(f"\n[❌] Error while creating video: {e}")
         return
