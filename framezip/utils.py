@@ -1,4 +1,5 @@
 import os
+import csv
 
 def get_images(folder):
     """
@@ -54,3 +55,19 @@ def compare_sizes(original_folder, video_path):
         print("\n⚠️ Video is heavier than images")
     else:
         print("\n🤝 Sizes are the same")
+        
+def write_psnr_ssim_csv(csv_path, psnr_vals, ssim_vals):
+    """
+    Write PSNR and SSIM values to a CSV file.
+
+    Args:
+        csv_path (str): Path to the CSV file.
+        psnr_vals (list): List of PSNR values.
+        ssim_vals (list): List of SSIM values.
+    """
+    with open(csv_path, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerow(['Frame', 'PSNR', 'SSIM'])
+        for i, (p, s) in enumerate(zip(psnr_vals, ssim_vals), start=1):
+            writer.writerow([i, round(p, 4), round(s, 4)])
+        print(f"\n📝 CSV exported: {csv_path}")

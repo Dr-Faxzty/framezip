@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from skimage.metrics import structural_similarity as ssim_lib
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from rich.progress import Progress
-from .utils import get_images
+from .utils import get_images, write_psnr_ssim_csv
 import csv
 
 def psnr(img1, img2):
@@ -37,42 +37,6 @@ def process_frame(orig, rec):
     ssim_val = ssim_lib(arr1, arr2, channel_axis=2)
     
     return psnr_val, ssim_val
-
-def plot_psnr_ssim(psnr_vals, ssim_vals):
-    """
-    Plots the PSNR and SSIM values.
-    
-    Args:
-        psnr_vals (list): List of PSNR values.
-        ssim_vals (list): List of SSIM values.
-    """
-    plt.figure(figsize=(12, 6))
-
-    # Plot PSNR
-    plt.subplot(1, 2, 1)
-    plt.plot(psnr_vals, marker='o', linestyle='-', color='blue', label='PSNR')
-    plt.axhline(y=40, color='green', linestyle='--', label='Soglia qualità ottima')
-    plt.axhline(y=30, color='orange', linestyle='--', label='Soglia qualità buona')
-    plt.axhline(y=20, color='red', linestyle='--', label='Soglia qualità bassa')
-    plt.title('PSNR per frame')
-    plt.xlabel('Frame')
-    plt.ylabel('PSNR (dB)')
-    plt.legend()
-    plt.grid(True)
-
-    # Plot SSIM
-    plt.subplot(1, 2, 2)
-    plt.plot(ssim_vals, marker='s', color='purple', label='SSIM')
-    plt.axhline(y=0.95, color='green', linestyle='--', label='Ottimo')
-    plt.axhline(y=0.90, color='orange', linestyle='--', label='Accettabile')
-    plt.title('SSIM per frame')
-    plt.xlabel('Frame')
-    plt.ylabel('SSIM')
-    plt.grid(True)
-    plt.legend()
-
-    plt.tight_layout()
-    plt.show()
 
 def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_ssim_results.csv"):
     """
@@ -124,14 +88,6 @@ def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_
     else:
         print("\n🔴 Low quality")
         
-    with open(csv_output, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerow(['Frame', 'PSNR', 'SSIM'])
-        for i, (p, s) in enumerate(zip(psnr_vals, ssim_vals), start=1):
-            writer.writerow([i, round(p, 4), round(s, 4)])
-
-    print("\n📝 CSV exported: psnr_ssim_results.csv")  
+    write_psnr_ssim_csv(csv_output, psnr_vals, ssim_vals)
     
-    plot_psnr_ssim(psnr_vals, ssim_vals)
-
     return psnr_vals, ssim_vals
