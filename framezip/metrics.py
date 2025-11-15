@@ -5,6 +5,7 @@ import imageio.v3 as iio
 import matplotlib.pyplot as plt
 from skimage.metrics import structural_similarity as ssim_lib
 from rich.progress import Progress
+from .utils import get_images
 import csv
 
 def psnr(img1, img2):
@@ -70,20 +71,19 @@ def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_
         psnr_vals (list): List of PSNR values.
         ssim_vals (list): List of SSIM values.
     """
-    originals = sorted([f for f in os.listdir(original_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
-    recon = sorted([f for f in os.listdir(reconstructed_folder) if f.lower().endswith('.jpg')])
+    originals = [os.path.join(original_folder, f) for f in get_images(original_folder)]
+    recon = [os.path.join(reconstructed_folder, f) for f in get_images(reconstructed_folder)]
 
     psnr_vals = []
     ssim_vals = []
     with Progress() as progress:
         task = progress.add_task("[cyan]Calculating PSNR and SSIM...", total=len(originals))
         for orig, rec in zip(originals, recon):
-            img1 = Image.open(os.path.join(original_folder, orig)).convert("RGB")
-            img2 = Image.open(os.path.join(reconstructed_folder, rec)).convert("RGB")
+            img1 = Image.open(orig).convert("RGB")
+            img2 = Image.open(rec).convert("RGB")
             
             img2 = img2.crop((0, 0, img1.width, img1.height))
-            iio.imwrite(os.path.join(reconstructed_folder, rec), img2)
-
+            iio.imwrite(rec, img2)
             arr1, arr2 = np.array(img1), np.array(img2)
             
             psnr_vals.append(psnr(arr1, arr2))

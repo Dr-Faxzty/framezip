@@ -4,6 +4,7 @@ from PIL import Image
 import numpy as np
 from rich.progress import Progress
 from .preprocessing import preprocess_images
+from .utils import get_images
 
 def images_to_video(input_folder, output_file, framerate="1"):
     """
@@ -16,12 +17,11 @@ def images_to_video(input_folder, output_file, framerate="1"):
     """
     preprocess_images(input_folder)
 
-    files = sorted(os.listdir(input_folder))
-    if not files:
+    frame_paths = [os.path.join(input_folder, p) for p in get_images(input_folder)]
+
+    if not frame_paths:
         raise RuntimeError("\nNo images found in the temporary folder")
     
-    frame_paths = [os.path.join(input_folder, f) for f in files]
-
     sizes = [Image.open(p).size for p in frame_paths]
     width = max(s[0] for s in sizes)
     height = max(s[1] for s in sizes)

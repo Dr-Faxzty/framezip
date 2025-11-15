@@ -1,5 +1,21 @@
 import os
 
+def get_images(folder):
+    """
+    Get a sorted list of image file names in a folder.
+
+    Args:
+        folder (str): Path to the folder.
+
+    Returns:
+        list: Sorted list of image file names.
+    """
+    images = sorted([
+        f for f in os.listdir(folder)
+        if f.lower().endswith(('.jpg', '.jpeg', '.png', '.webp'))
+    ])
+    return images
+
 def get_folder_size_mb(folder, exts):
     """
     Calculate the size of all files in a folder with specific extensions.

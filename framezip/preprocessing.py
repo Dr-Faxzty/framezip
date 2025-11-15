@@ -1,4 +1,5 @@
 import os
+from .utils import get_images
 
 def preprocess_images(input_folder):
     """
@@ -8,11 +9,8 @@ def preprocess_images(input_folder):
     Args:
         input_folder (str): Folder containing images to rename.
     """
-    images = sorted([
-        f for f in os.listdir(input_folder)
-        if f.lower().endswith(('.jpg', '.jpeg', '.png'))
-    ])
-
+    images = get_images(input_folder)
+    
     for idx, img_name in enumerate(images, start=1):
         ext = os.path.splitext(img_name)[1].lower()
         new_name = f"frame{idx:03d}{ext}"
