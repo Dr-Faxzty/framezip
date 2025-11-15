@@ -1,6 +1,7 @@
 import os
 import numpy as np
 from PIL import Image
+import imageio.v3 as iio
 import matplotlib.pyplot as plt
 from skimage.metrics import structural_similarity as ssim_lib
 import csv
@@ -63,6 +64,10 @@ def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_
         original_folder (str): Path to the folder containing original images.
         reconstructed_folder (str): Path to the folder containing reconstructed images.
         csv_output (str): Path to save the CSV output file.
+        
+    Returns:
+        psnr_vals (list): List of PSNR values.
+        ssim_vals (list): List of SSIM values.
     """
     originals = sorted([f for f in os.listdir(original_folder) if f.lower().endswith(('.jpg', '.jpeg', '.png'))])
     recon = sorted([f for f in os.listdir(reconstructed_folder) if f.lower().endswith('.jpg')])
@@ -74,8 +79,9 @@ def compare_psnr_ssim(original_folder, reconstructed_folder, csv_output = "psnr_
         img1 = Image.open(os.path.join(original_folder, orig)).convert("RGB")
         img2 = Image.open(os.path.join(reconstructed_folder, rec)).convert("RGB")
         
-        img1 = img1.resize(img2.size)
-        
+        img2 = img2.crop((0, 0, img1.width, img1.height))
+        iio.imwrite(os.path.join(reconstructed_folder, rec), img2)
+
         arr1, arr2 = np.array(img1), np.array(img2)
         
         psnr_vals.append(psnr(arr1, arr2))

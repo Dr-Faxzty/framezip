@@ -21,17 +21,17 @@ def images_to_video(input_folder, output_file, framerate="1"):
     
     frame_paths = [os.path.join(input_folder, f) for f in files]
 
-    base_image = Image.open(frame_paths[0])
-    width, height = base_image.size
-    width = (width // 16) * 16
-    height = (height // 16) * 16
+    sizes = [Image.open(p).size for p in frame_paths]
+    width = max(s[0] for s in sizes)
+    height = max(s[1] for s in sizes)
 
     frames = []
     for path in frame_paths:
+        empty = Image.new("RGB", (width, height), (0, 0, 0))
         with Image.open(path) as img:
-            img = img.convert("RGB").resize((width, height))
-            frames.append(np.array(img))
-
+            img = img.convert("RGB")
+            empty.paste(img, (0, 0))
+            frames.append(np.array(empty))
 
     print("\n[▶] Video creation in progress...")
     try:
