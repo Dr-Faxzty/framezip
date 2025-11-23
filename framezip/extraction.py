@@ -3,9 +3,6 @@ import shutil
 import imageio.v3 as iio
 from rich.progress import Progress
 
-def count_frames(path):
-    return sum(1 for _ in iio.imiter(path))
-
 def video_to_images(video_path, output_folder):
     """
     Extract frames from a video and save them as images.
@@ -20,11 +17,14 @@ def video_to_images(video_path, output_folder):
 
     print("\n[🔄] Extracting images from video...")
     with Progress() as progress:
-        task = progress.add_task("[cyan]Extracting frames...", total=count_frames(video_path))
+        task = progress.add_task("[cyan]Extracting frames...", total=None)
+        saved_frames = 0
         for i, frame in enumerate(iio.imiter(video_path)):
             output_path = os.path.join(output_folder, f'frame{i+1:03d}.jpg')
             iio.imwrite(output_path, frame)
-            progress.update(task, advance=1)
+            progress.update(task, advance=1, description=f"{i+1}")
+            saved_frames += 1
+        progress.update(task, total=saved_frames)
 
     print("\n[✓] Extraction complete.")
     
